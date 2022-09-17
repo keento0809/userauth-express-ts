@@ -3,6 +3,7 @@
 
 import express, { Express } from "express";
 import dotenv from "dotenv";
+import root from "./routes/root";
 import home from "./routes/home";
 import user from "./routes/user";
 import auth from "./routes/auth";
@@ -22,7 +23,8 @@ app.use(
     keys: ["key1", "key2"],
   })
 );
-app.use("/", home);
+app.use("/", root);
+app.use("/home", home);
 app.use("/user", user);
 app.use("/auth", auth);
 
