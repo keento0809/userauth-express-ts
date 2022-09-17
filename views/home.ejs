@@ -8,8 +8,9 @@
   </head>
   <body>
     <h2>Home</h2>
-    <p>Welcome! <%= username %></p>
-    <a href="/auth/login">Login</a>
-    <a href="/auth/signup">Signup</a>
+    <p>Welcome to the main page!</p>
+    <form action="/auth/logout" method="post">
+      <button>Logout</button>
+    </form>
   </body>
 </html>
