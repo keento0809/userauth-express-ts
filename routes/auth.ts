@@ -1,27 +1,28 @@
 import express, { Request, Response } from "express";
-import bcrypt from "bcrypt";
-// import users from "../models/users.json";
+import { hashPassword } from "../helper/auth";
+import { getLoginPage, getSignupPage } from "../controllers/authController";
+import users from "../models/users.json";
+
 const router = express.Router();
 
-const hashPassword = async (passwordText: string, saltRound: number) => {
-  const salt = await bcrypt.genSalt(saltRound);
-  const hashedPassword = await bcrypt.hash(passwordText, salt);
-  return hashedPassword;
-};
-router.get("/login", (req: Request, res: Response) => {
-  res.render("login");
-});
+interface userType {
+  username: string;
+  email: string;
+  password: string;
+}
 
+router.get("/login", getLoginPage);
+router.get("/signup", getSignupPage);
 router.post("/login", async (req: Request, res: Response) => {
-  const { username, email, password } = req.body;
-  const hashedPassword = await hashPassword(password, 12);
-  console.log(hashedPassword);
+  const { email, password } = req.body;
 
   res.redirect("/");
 });
 
-router.get("/signup", (req: Request, res: Response) => {
-  res.render("signup");
+router.post("/signup", async (req: Request, res: Response) => {
+  const { username, email, password } = req.body;
+  const hashedPassword = await hashPassword(password, 12);
+  // const test = JSON.parse(users);
 });
 
 export default router;
