@@ -1,6 +1,8 @@
+import * as fs from "fs";
 import { Request, Response } from "express";
-import { hashPassword, checkUserMatch } from "../helper/auth";
-import users from "../models/users.json";
+import { hashPassword, checkUserMatch, updateUsers } from "../helper/auth";
+import users from "../users.json";
+const fileName = "../models/users.json";
 
 export interface userObj {
   username: string;
@@ -21,6 +23,7 @@ export const login = async (req: Request, res: Response) => {
   console.log(email, password);
   const loginUser = users.find((user) => user.email === email);
   if (!loginUser) res.status(400).json({ error: "Invalid login" });
+  console.log(loginUser);
   const isUserMatch = checkUserMatch(password, loginUser!);
   if (!isUserMatch) res.status(400).json({ error: "Invalid login" });
   req.session!.username = loginUser!.username;
@@ -32,7 +35,10 @@ export const signup = async (req: Request, res: Response) => {
   const hashedPassword = await hashPassword(password, 12);
   if (!hashedPassword) throw new Error("Invalid login");
   req.session!.username = username;
-  console.log(req.session);
+  const newUser: userObj = { username, email, password: hashedPassword };
+  const usersData: userObj[] = [...users, newUser];
+  await updateUsers(usersData);
+  console.log(users);
   res.redirect("/home");
 };
 
